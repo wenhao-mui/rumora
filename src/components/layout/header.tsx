@@ -36,6 +36,9 @@ export function Header() {
             <Link href="/agents" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
               Agents
             </Link>
+            <Link href="/props-ai" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+              Props AI
+            </Link>
           </nav>
 
           {/* Desktop Auth Section */}
@@ -100,6 +103,13 @@ export function Header() {
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Agents
+                    </Link>
+                    <Link 
+                      href="/props-ai" 
+                      className="block py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Props AI
                     </Link>
                   </nav>
 
