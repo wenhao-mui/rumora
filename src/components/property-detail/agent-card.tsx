@@ -14,6 +14,7 @@ import {
   MapPin,
   ExternalLink
 } from "lucide-react";
+import Link from "next/link";
 
 interface Agent {
   id: string;
@@ -54,8 +55,8 @@ export function AgentCard({ agent }: AgentCardProps) {
   };
 
   const viewAgentProfile = () => {
-    // TODO: Navigate to agent profile page
-    console.log('View agent profile:', agent.id);
+    // Navigate to agent profile page
+    window.open(`/agents/${agent.id}`, '_blank');
   };
 
   return (
@@ -63,22 +64,37 @@ export function AgentCard({ agent }: AgentCardProps) {
       <CardContent className="p-6">
         {/* Agent Header */}
         <div className="text-center mb-6">
-          <div className="w-20 h-20 mx-auto mb-4 rounded-full overflow-hidden border-4 border-blue-100 dark:border-blue-900/30">
+          <div className="w-20 h-20 mx-auto mb-4 rounded-full overflow-hidden border-4 border-blue-100 dark:border-blue-900/30 cursor-pointer hover:border-blue-200 dark:hover:border-blue-700 transition-colors relative group">
             {agent.avatar ? (
               <img
                 src={agent.avatar}
                 alt={agent.name}
                 className="w-full h-full object-cover"
+                onClick={viewAgentProfile}
+                title="Click to view agent profile"
               />
             ) : (
-              <div className="w-full h-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-white text-2xl font-bold">
+              <div 
+                className="w-full h-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-white text-2xl font-bold cursor-pointer"
+                onClick={viewAgentProfile}
+                title="Click to view agent profile"
+              >
                 {agent.name.charAt(0)}
               </div>
             )}
+            {/* Hover overlay */}
+            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 flex items-center justify-center">
+              <ExternalLink className="h-5 w-5 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+            </div>
           </div>
           
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
+          <h3 
+            className="text-xl font-bold text-gray-900 dark:text-white mb-1 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+            onClick={viewAgentProfile}
+            title="Click to view agent profile"
+          >
             {agent.name}
+            <ExternalLink className="h-4 w-4 inline ml-2 text-blue-500" />
           </h3>
           
           <div className="flex items-center justify-center gap-1 mb-2">

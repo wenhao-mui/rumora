@@ -33,14 +33,8 @@ export function Header() {
             <Link href="/properties" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
               Properties
             </Link>
-            <Link href="/services" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-              Services
-            </Link>
-            <Link href="/about" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-              About
-            </Link>
-            <Link href="/contact" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-              Contact
+            <Link href="/agents" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+              Agents
             </Link>
           </nav>
 
@@ -101,25 +95,11 @@ export function Header() {
                       Properties
                     </Link>
                     <Link 
-                      href="/services" 
+                      href="/agents" 
                       className="block py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
-                      Services
-                    </Link>
-                    <Link 
-                      href="/about" 
-                      className="block py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      About
-                    </Link>
-                    <Link 
-                      href="/contact" 
-                      className="block py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      Contact
+                      Agents
                     </Link>
                   </nav>
 

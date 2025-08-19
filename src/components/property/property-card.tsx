@@ -198,13 +198,30 @@ export function PropertyCard({ property }: PropertyCardProps) {
         <div className="mb-4">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+              <div 
+                className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center cursor-pointer hover:bg-blue-200 transition-colors"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  window.open(`/agents/${property.agent.id}`, '_blank');
+                }}
+                title="View agent profile"
+              >
                 <span className="text-blue-600 font-semibold text-sm">
                   {property.agent.name.charAt(0)}
                 </span>
               </div>
               <div>
-                <div className="font-medium text-gray-900">{property.agent.name}</div>
+                <div 
+                  className="font-medium text-gray-900 cursor-pointer hover:text-blue-600 transition-colors flex items-center gap-1"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    window.open(`/agents/${property.agent.id}`, '_blank');
+                  }}
+                  title="View agent profile"
+                >
+                  {property.agent.name}
+                  <ExternalLink className="h-3 w-3 text-blue-500" />
+                </div>
                 <div className="text-sm text-gray-500">Property Agent</div>
               </div>
             </div>

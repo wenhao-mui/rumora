@@ -42,18 +42,18 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/services" className="text-gray-300 hover:text-white transition-colors">
-                  Property Valuation
+                <Link href="/agents" className="text-gray-300 hover:text-white transition-colors">
+                  Find Agents
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="text-gray-300 hover:text-white transition-colors">
-                  Property Management
+                <Link href="/auth/signin" className="text-gray-300 hover:text-white transition-colors">
+                  User Sign In
                 </Link>
               </li>
               <li>
-                <Link href="/agent" className="text-gray-300 hover:text-white transition-colors">
-                  Agent Services
+                <Link href="/auth/agent-signin" className="text-gray-300 hover:text-white transition-colors">
+                  Agent Sign In
                 </Link>
               </li>
             </ul>

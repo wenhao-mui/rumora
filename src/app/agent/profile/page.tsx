@@ -40,7 +40,7 @@ export default function AgentProfile() {
     specialization: "residential",
     location: "Kuala Lumpur, Selangor, Petaling Jaya",
     bio: "Experienced property agent specializing in residential properties across Kuala Lumpur and Selangor. Committed to finding the perfect home for every client.",
-    avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face"
+    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face"
   });
 
   const [propertyListings] = useState<Property[]>([
@@ -70,7 +70,7 @@ export default function AgentProfile() {
         phone: "+60123456789",
         whatsapp: "+60123456789",
         email: "sarah.johnson@rumora.com",
-        avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face"
+        avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face"
       },
       status: "active",
       createdAt: "2024-01-15T10:00:00Z",
