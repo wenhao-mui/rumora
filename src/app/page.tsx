@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { SearchBar } from "@/components/property/search-bar";
 import { PropertyCard } from "@/components/property/property-card";
 import { Button } from "@/components/ui/button";
@@ -104,19 +105,21 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <Card className="text-center p-6 hover:shadow-lg transition-shadow duration-300">
-              <CardContent className="p-0">
-                <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Search className="h-8 w-8 text-blue-600" />
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                  Advanced Search
-                </h3>
-                <p className="text-gray-600 dark:text-gray-300">
-                  Find properties with precise filters and location intelligence
-                </p>
-              </CardContent>
-            </Card>
+            <Link href="/financing">
+              <Card className="text-center p-6 hover:shadow-lg transition-shadow duration-300 cursor-pointer">
+                <CardContent className="p-0">
+                  <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <TrendingUp className="h-8 w-8 text-blue-600" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                    AI Financing
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-300">
+                    Get instant mortgage pre-approval and financing recommendations
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
 
             <Card className="text-center p-6 hover:shadow-lg transition-shadow duration-300">
               <CardContent className="p-0">
