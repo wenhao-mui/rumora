@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { ComponentData, ComponentType, PageLayout } from '@/types/page-builder';
+import { ComponentData, PageLayout } from '@/types/page-builder';
 
 interface HistoryState {
   components: ComponentData[];

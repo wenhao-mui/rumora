@@ -21,10 +21,6 @@ import {
   Heart, 
   MapPin, 
   Calendar,
-  Ruler,
-  Car,
-  Bed,
-  Bath,
   Home
 } from "lucide-react";
 
@@ -62,7 +58,7 @@ export default function PropertyDetailPage() {
     
     switch (type) {
       case 'whatsapp':
-        window.open(`https://wa.me/${property.agent.whatsapp}?text=Hi, I'm interested in ${property.title}`, '_blank');
+        window.open(`https://wa.me/${property.agent.whatsapp}?text=Hi, I&apos;m interested in ${property.title}`, '_blank');
         break;
       case 'call':
         window.open(`tel:${property.agent.phone}`, '_blank');
@@ -97,7 +93,7 @@ export default function PropertyDetailPage() {
             Property Not Found
           </h1>
           <p className="text-gray-600 dark:text-gray-300">
-            The property you're looking for doesn't exist or has been removed.
+            The property you&apos;re looking for doesn&apos;t exist or has been removed.
           </p>
         </div>
       </div>

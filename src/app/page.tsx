@@ -5,9 +5,8 @@ import { SearchBar } from "@/components/property/search-bar";
 import { PropertyCard } from "@/components/property/property-card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { Property } from "@/types/property";
+
+import { Property, SearchFilters } from "@/types/property";
 import { 
   Search, 
   TrendingUp, 
@@ -37,7 +36,7 @@ export default function HomePage() {
     }
   };
 
-  const handleSearch = (filters: any) => {
+  const handleSearch = (filters: SearchFilters) => {
     console.log('Search filters:', filters);
     // Implement search logic here
   };

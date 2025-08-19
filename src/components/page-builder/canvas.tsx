@@ -149,7 +149,7 @@ export const Canvas = forwardRef<HTMLDivElement, CanvasProps>(
           parentId: null // Mark as page-level
         };
       }
-    }, [components, gridSize]);
+    }, [components, gridSize, gridRows]);
 
     const handleDragOver = useCallback((e: React.DragEvent) => {
       e.preventDefault();

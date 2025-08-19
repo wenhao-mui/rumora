@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useCallback } from "react";
 import { ComponentData, ComponentType } from "@/types/page-builder";
-import { X, Move, Settings } from "lucide-react";
+import { X, Move } from "lucide-react";
 
 interface CanvasComponentProps {
   component: ComponentData;

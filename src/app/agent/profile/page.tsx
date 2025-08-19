@@ -9,11 +9,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { 
   User, 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Building, 
-  Award, 
   Home, 
   Users, 
   BarChart3, 

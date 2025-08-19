@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
@@ -11,7 +11,6 @@ import {
   Train, 
   ShoppingCart, 
   Heart, 
-  Building2,
   Navigation,
   ExternalLink
 } from "lucide-react";
@@ -134,7 +133,7 @@ export function LocationMap({ coordinates, address }: LocationMapProps) {
             Nearby Amenities
           </h3>
           
-          <Tabs value={selectedAmenityType} onValueChange={(value) => setSelectedAmenityType(value as any)}>
+          <Tabs value={selectedAmenityType} onValueChange={(value) => setSelectedAmenityType(value as 'all' | 'school' | 'transport' | 'shopping' | 'healthcare')}>
             <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="all">All</TabsTrigger>
               <TabsTrigger value="school">Education</TabsTrigger>

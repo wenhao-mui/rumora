@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge";
 import { 
   ChevronDown, 
   ChevronRight, 
-  HelpCircle, 
   MessageCircle,
   Plus,
   Edit3
@@ -22,6 +21,27 @@ interface FAQ {
   isCustom?: boolean;
   agentId?: string;
 }
+
+// Helper functions
+const getCategoryIcon = (category: string) => {
+  switch (category) {
+    case 'general': return '🏠';
+    case 'legal': return '⚖️';
+    case 'financial': return '💰';
+    case 'custom': return '💬';
+    default: return '❓';
+  }
+};
+
+const getCategoryColor = (category: string) => {
+  switch (category) {
+    case 'general': return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200';
+    case 'legal': return 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-blue-200';
+    case 'financial': return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-blue-200';
+    case 'custom': return 'bg-orange-100 text-orange-800 dark:bg-blue-900/30 dark:text-blue-200';
+    default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-blue-200';
+  }
+};
 
 export function PropertyFAQs() {
   const [faqs, setFaqs] = useState<FAQ[]>([
@@ -104,7 +124,7 @@ export function PropertyFAQs() {
   ]);
 
   const [showAddFAQ, setShowAddFAQ] = useState(false);
-  const [newFAQ, setNewFAQ] = useState({ question: '', answer: '', category: 'general' as const });
+  const [newFAQ, setNewFAQ] = useState({ question: '', answer: '', category: 'general' as 'general' | 'legal' | 'financial' | 'custom' });
 
   const toggleFAQ = (id: string) => {
     setFaqs(faqs.map(faq => 
@@ -130,25 +150,7 @@ export function PropertyFAQs() {
     }
   };
 
-  const getCategoryIcon = (category: string) => {
-    switch (category) {
-      case 'general': return '🏠';
-      case 'legal': return '⚖️';
-      case 'financial': return '💰';
-      case 'custom': return '💬';
-      default: return '❓';
-    }
-  };
 
-  const getCategoryColor = (category: string) => {
-    switch (category) {
-      case 'general': return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200';
-      case 'legal': return 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-200';
-      case 'financial': return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200';
-      case 'custom': return 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-200';
-      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-200';
-    }
-  };
 
   const groupedFAQs = {
     general: faqs.filter(faq => faq.category === 'general'),
@@ -217,7 +219,7 @@ export function PropertyFAQs() {
                 </label>
                 <select
                   value={newFAQ.category}
-                  onChange={(e) => setNewFAQ({ ...newFAQ, category: e.target.value as any })}
+                  onChange={(e) => setNewFAQ({ ...newFAQ, category: e.target.value as 'general' | 'legal' | 'financial' | 'custom' })}
                   className="w-full px-3 py-2 border border-blue-200 dark:border-blue-700 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                 >
                   <option value="general">General</option>
@@ -378,24 +380,4 @@ function FAQItem({ faq, onToggle }: FAQItemProps) {
       )}
     </div>
   );
-}
-
-function getCategoryColor(category: string) {
-  switch (category) {
-    case 'general': return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200';
-    case 'legal': return 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-200';
-    case 'financial': return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200';
-    case 'custom': return 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-200';
-    default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-200';
-  }
-}
-
-function getCategoryIcon(category: string) {
-  switch (category) {
-    case 'general': return '🏠';
-    case 'legal': return '⚖️';
-    case 'financial': return '💰';
-    case 'custom': return '💬';
-    default: return '❓';
-  }
 } 

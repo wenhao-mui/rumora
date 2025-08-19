@@ -12,7 +12,7 @@ declare global {
       toBeEnabled(): R
       toHaveValue(value: string | number | string[]): R
       toHaveDisplayValue(value: string | RegExp | (string | RegExp)[]): R
-      toHaveStyle(css: string | Record<string, any>): R
+      toHaveStyle(css: string | Record<string, string | number>): R
       toHaveFocus(): R
       toBeChecked(): R
       toBePartiallyChecked(): R

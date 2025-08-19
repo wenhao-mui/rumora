@@ -8,7 +8,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   TrendingUp, 
   TrendingDown, 
-  DollarSign, 
   BarChart3,
   Info,
   Target,
@@ -125,7 +124,7 @@ export function PricingInsights({ property }: PricingInsightsProps) {
               Pricing Insights
             </h2>
             <p className="text-gray-600 dark:text-gray-300">
-              Understand the property's value in the current market
+              Understand the property&apos;s value in the current market
             </p>
           </div>
           

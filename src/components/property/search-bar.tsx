@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 
-import { SearchFilters } from "@/types/property";
+import { SearchFilters, PropertyType } from "@/types/property";
 
 interface SearchBarProps {
   onSearch: (filters: SearchFilters) => void;
@@ -76,7 +76,7 @@ export function SearchBar({ onSearch, isEmbedded = false }: SearchBarProps) {
   const handleSearch = () => {
     const filters: SearchFilters = {
       location,
-      propertyType: propertyType === "any" ? undefined : propertyType as any,
+      propertyType: propertyType === "any" ? undefined : propertyType as PropertyType,
       priceRange: {
         min: priceRange[0],
         max: priceRange[1]

@@ -6,7 +6,7 @@ import { PropertyCard } from "@/components/property/property-card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { SearchFilters, SearchResult, Property } from "@/types/property";
-import { Search, Grid, List, ChevronDown, Loader2, Filter, MapPin } from "lucide-react";
+import { Search, Grid, List, Loader2, Filter, MapPin } from "lucide-react";
 
 export default function PropertiesPage() {
   const [searchResults, setSearchResults] = useState<SearchResult | null>(null);

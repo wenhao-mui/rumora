@@ -11,9 +11,6 @@ import {
   Bath, 
   Car, 
   Home,
-  Calendar,
-  Star,
-  Award,
   Sparkles
 } from "lucide-react";
 import { Property } from "@/types/property";

@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Eye, EyeOff, Mail, Lock, User, Phone, MapPin, Building, FileText, Award } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, User, Phone, MapPin, Building, Award } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
