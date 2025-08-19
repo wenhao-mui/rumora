@@ -8,21 +8,28 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+
+interface SearchFilters {
+  location: string;
+  propertyType: string;
+  priceRange: [number, number];
+  bedrooms: string;
+  bathrooms: string;
+}
 
 interface SearchBarProps {
-  onSearch: (filters: any) => void;
+  onSearch: (filters: SearchFilters) => void;
   isEmbedded?: boolean;
 }
 
 export function SearchBar({ onSearch, isEmbedded = false }: SearchBarProps) {
   const [location, setLocation] = useState("");
   const [propertyType, setPropertyType] = useState("any");
-  const [priceRange, setPriceRange] = useState([0, 5000000]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 5000000]);
   const [bedrooms, setBedrooms] = useState("any");
   const [bathrooms, setBathrooms] = useState("any");
   const [showFilters, setShowFilters] = useState(false);
-  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [suggestions, setSuggestions] = useState<{ name: string; type: string }[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const suggestionsRef = useRef<HTMLDivElement>(null);
 
@@ -61,7 +68,7 @@ export function SearchBar({ onSearch, isEmbedded = false }: SearchBarProps) {
     }
   };
 
-  const handleSuggestionClick = (suggestion: any) => {
+  const handleSuggestionClick = (suggestion: { name: string; type: string }) => {
     setLocation(suggestion.name);
     setShowSuggestions(false);
   };

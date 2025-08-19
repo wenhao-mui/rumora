@@ -23,20 +23,38 @@ interface PropertyCardProps {
   property: {
     id: string;
     title: string;
+    description: string;
     price: number;
-    location: string;
+    priceType: "sale" | "rent";
+    location: {
+      neighborhood: string;
+      city: string;
+      state: string;
+      coordinates: {
+        lat: number;
+        lng: number;
+      };
+    };
     propertyType: string;
-    size: number;
+    size: {
+      sqft: number;
+      sqm: number;
+    };
     bedrooms: number;
     bathrooms: number;
     images: string[];
-    isNew?: boolean;
-    highlights?: string[];
+    features: string[];
     agent: {
+      id: string;
       name: string;
       phone: string;
       whatsapp: string;
+      email: string;
+      avatar: string;
     };
+    status: string;
+    createdAt: string;
+    updatedAt: string;
   };
 }
 
@@ -65,8 +83,8 @@ export function PropertyCard({ property }: PropertyCardProps) {
     return `RM ${price}`;
   };
 
-  const formatSize = (size: number) => {
-    return `${size.toLocaleString()} sqft`;
+  const formatSize = (size: { sqft: number; sqm: number }) => {
+    return `${size.sqft.toLocaleString()} sqft`;
   };
 
   const isNewProperty = (id: string) => {
@@ -141,9 +159,9 @@ export function PropertyCard({ property }: PropertyCardProps) {
               New
             </Badge>
           )}
-          {property.highlights?.map((highlight, index) => (
+          {property.features?.slice(0, 2).map((feature, index) => (
             <Badge key={index} variant="secondary" className="bg-blue-500 hover:bg-blue-600 text-white">
-              {highlight}
+              {feature}
             </Badge>
           ))}
         </div>
@@ -154,6 +172,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
         <div className="flex items-center justify-between mb-2">
           <div className="text-2xl font-bold text-gray-900">
             {formatPrice(property.price)}
+            {property.priceType === 'rent' && <span className="text-sm text-gray-500">/month</span>}
           </div>
           <Badge variant="outline" className="text-sm">
             {property.propertyType}
@@ -168,7 +187,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
         {/* Location */}
         <div className="flex items-center text-gray-600 text-sm">
           <MapPin className="h-4 w-4 mr-1" />
-          <span className="line-clamp-1">{property.location}</span>
+          <span className="line-clamp-1">{property.location.neighborhood}, {property.location.city}</span>
         </div>
       </CardHeader>
 

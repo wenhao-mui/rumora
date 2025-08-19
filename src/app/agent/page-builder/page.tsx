@@ -22,9 +22,7 @@ export default function PageBuilder() {
     addComponent,
     updateComponent,
     removeComponent,
-    reorderComponents,
     saveLayout,
-    loadLayout,
     clearLayout
   } = usePageBuilderStore();
 
@@ -79,7 +77,7 @@ export default function PageBuilder() {
     window.open('/agent/page-builder/preview', '_blank');
   };
 
-  const getDefaultProps = (type: ComponentType) => {
+  const getDefaultProps = (type: ComponentType): Record<string, string> => {
     switch (type) {
       case 'container-1col':
         return {
@@ -104,10 +102,18 @@ export default function PageBuilder() {
         showGrid={showGrid}
         onToggleGrid={() => setShowGrid(!showGrid)}
         zoom={zoom}
-        onZoomChange={setZoom}
+        onZoomIn={() => setZoom(prev => Math.min(prev + 25, 200))}
+        onZoomOut={() => setZoom(prev => Math.max(prev - 25, 25))}
+        onZoomReset={() => setZoom(100)}
         onSave={handleSave}
         onClear={handleClear}
         onPreview={handlePreview}
+        onUndo={() => {}}
+        onRedo={() => {}}
+        canUndo={false}
+        canRedo={false}
+        savedLayouts={[]}
+        onLoadLayout={() => {}}
       />
 
       {/* Main Builder Area */}
@@ -126,7 +132,6 @@ export default function PageBuilder() {
             onComponentSelect={handleComponentSelect}
             onComponentUpdate={handleComponentUpdate}
             onComponentDelete={handleComponentDelete}
-            onReorderComponents={reorderComponents}
             selectedComponent={selectedComponent}
           />
         </div>
@@ -146,7 +151,7 @@ export default function PageBuilder() {
 }
 
 // Helper functions for default component properties and styles
-function getDefaultStyle(type: ComponentType): any {
+function getDefaultStyle(type: ComponentType): Record<string, string> {
   switch (type) {
     case 'container-1col':
       return { backgroundColor: '#ffffff', padding: '30px', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' };

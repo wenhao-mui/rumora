@@ -176,7 +176,7 @@ export default function AgentSignin() {
                 <div className="w-full border-t border-gray-300"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white dark:bg-gray-800 text-gray-500">Don't have an agent account?</span>
+                <span className="px-2 bg-white dark:bg-gray-800 text-gray-500">Don&apos;t have an agent account?</span>
               </div>
             </div>
 

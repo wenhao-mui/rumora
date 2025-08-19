@@ -1,12 +1,10 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { User, Building, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -125,7 +123,7 @@ export function Header() {
                     </Link>
                   </nav>
 
-                  <Separator className="my-6" />
+                  <div className="border-t border-gray-200 dark:border-gray-700 my-6" />
 
                   {/* Mobile Auth Section */}
                   <div className="space-y-4">

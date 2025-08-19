@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { ComponentData } from "@/types/page-builder";
-import { X, Palette, Type, Image, Settings as SettingsIcon } from "lucide-react";
+import { X, Palette, Type } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,13 +22,13 @@ export function SettingsPanel({
 }: SettingsPanelProps) {
   const [activeTab, setActiveTab] = useState<'content' | 'style' | 'layout'>('content');
 
-  const handlePropertyChange = (key: string, value: any) => {
+  const handlePropertyChange = (key: string, value: string) => {
     onUpdate(component.id, {
       props: { ...component.props, [key]: value }
     });
   };
 
-  const handleStyleChange = (key: string, value: any) => {
+  const handleStyleChange = (key: string, value: string | number) => {
     onUpdate(component.id, {
       style: { ...component.style, [key]: value }
     });
@@ -323,7 +323,7 @@ export function SettingsPanel({
               : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
           }`}
         >
-          <SettingsIcon className="h-4 w-4 inline mr-2" />
+                          <Type className="h-4 w-4 inline mr-2" />
           Layout
         </button>
       </div>

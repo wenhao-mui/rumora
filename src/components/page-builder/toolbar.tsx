@@ -11,11 +11,9 @@ import {
   Save, 
   RotateCcw, 
   Eye, 
-  Download, 
   Upload,
   Undo2,
   Redo2,
-  Settings,
   ChevronDown
 } from "lucide-react";
 

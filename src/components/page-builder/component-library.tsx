@@ -54,7 +54,7 @@ const categories = [
 export function ComponentLibrary() {
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedCategories, setExpandedCategories] = useState<string[]>(['layout']);
-  const [isDragging, setIsDragging] = useState(false);
+
 
   const toggleCategory = (categoryId: string) => {
     setExpandedCategories(prev => 
@@ -65,13 +65,12 @@ export function ComponentLibrary() {
   };
 
   const handleDragStart = (e: React.DragEvent, componentType: ComponentType) => {
-    setIsDragging(true);
     e.dataTransfer.setData('componentType', componentType);
     e.dataTransfer.effectAllowed = 'copy';
   };
 
   const handleDragEnd = () => {
-    setIsDragging(false);
+    // Drag ended
   };
 
   const filteredComponents = componentTemplates.filter(component =>

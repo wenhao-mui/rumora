@@ -13,7 +13,7 @@ interface CanvasProps {
   onComponentSelect: (component: ComponentData | null) => void;
   onComponentUpdate: (componentId: string, updates: Partial<ComponentData>) => void;
   onComponentDelete: (componentId: string) => void;
-  onReorderComponents: (fromIndex: number, toIndex: number) => void;
+
   selectedComponent: ComponentData | null;
 }
 
@@ -26,7 +26,6 @@ export const Canvas = forwardRef<HTMLDivElement, CanvasProps>(
     onComponentSelect,
     onComponentUpdate,
     onComponentDelete,
-    onReorderComponents,
     selectedComponent
   }, ref) => {
     const [isDragOver, setIsDragOver] = useState(false);
@@ -37,7 +36,6 @@ export const Canvas = forwardRef<HTMLDivElement, CanvasProps>(
     const pageWidth = 1200; // Standard desktop width
     const pageHeight = 800; // Minimum page height
     const gridSize = 20; // Grid cell size
-    const gridColumns = Math.floor(pageWidth / gridSize); // Number of grid columns
     const gridRows = Math.floor(pageHeight / gridSize); // Number of grid rows
 
     // Helper function to find the best grid position for a new component
@@ -55,7 +53,6 @@ export const Canvas = forwardRef<HTMLDivElement, CanvasProps>(
       };
 
       const dimensions = getComponentDimensions(componentType);
-      const gridWidth = Math.ceil(dimensions.width);
       const gridHeight = Math.ceil(dimensions.height);
 
       // Check if dropping inside an existing layout component
@@ -152,7 +149,7 @@ export const Canvas = forwardRef<HTMLDivElement, CanvasProps>(
           parentId: null // Mark as page-level
         };
       }
-    }, [components, gridSize, gridColumns, gridRows]);
+    }, [components, gridSize]);
 
     const handleDragOver = useCallback((e: React.DragEvent) => {
       e.preventDefault();
@@ -287,7 +284,7 @@ export const Canvas = forwardRef<HTMLDivElement, CanvasProps>(
               key={component.id}
               component={component}
               isSelected={selectedComponent?.id === component.id}
-              onClick={(e) => handleComponentClick(e, component)}
+              onClick={(e: React.MouseEvent) => handleComponentClick(e, component)}
               onUpdate={handleComponentUpdate}
               onDelete={handleComponentDelete}
               zIndex={index}

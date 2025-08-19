@@ -234,7 +234,7 @@ export const usePageBuilderStore = create<PageBuilderStore>()(
       
       importLayout: (json: string) => {
         try {
-          const data = JSON.parse(json);
+          const data: { components?: ComponentData[] } = JSON.parse(json);
           if (data.components && Array.isArray(data.components)) {
             set({
               components: data.components,

@@ -277,7 +277,7 @@ export default function PublicUserProfile() {
                       Saved Properties
                     </CardTitle>
                     <CardDescription>
-                      Your favorite properties that you've saved for later
+                      Your favorite properties that you&apos;ve saved for later
                     </CardDescription>
                   </CardHeader>
                 </Card>

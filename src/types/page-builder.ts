@@ -23,8 +23,8 @@ export interface ComponentData {
   id: string;
   type: ComponentType;
   position: Position;
-  props: Record<string, any>;
-  style: Record<string, any>;
+  props: Record<string, string | number | boolean>;
+  style: Record<string, string | number>;
   parentId?: string | null; // ID of parent container, null for page-level components
   size?: {
     width: number;
@@ -40,8 +40,8 @@ export interface ComponentTemplate {
   description: string;
   icon: string;
   category: 'basic' | 'content' | 'forms' | 'property' | 'layout';
-  defaultProps: Record<string, any>;
-  defaultStyle: Record<string, any>;
+  defaultProps: Record<string, string | number | boolean>;
+  defaultStyle: Record<string, string | number>;
 }
 
 export interface PageLayout {
