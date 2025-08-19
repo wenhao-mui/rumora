@@ -17,10 +17,10 @@ interface SearchBarProps {
 
 export function SearchBar({ onSearch, isEmbedded = false }: SearchBarProps) {
   const [location, setLocation] = useState("");
-  const [propertyType, setPropertyType] = useState("");
+  const [propertyType, setPropertyType] = useState("any");
   const [priceRange, setPriceRange] = useState([0, 5000000]);
-  const [bedrooms, setBedrooms] = useState("");
-  const [bathrooms, setBathrooms] = useState("");
+  const [bedrooms, setBedrooms] = useState("any");
+  const [bathrooms, setBathrooms] = useState("any");
   const [showFilters, setShowFilters] = useState(false);
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -30,8 +30,8 @@ export function SearchBar({ onSearch, isEmbedded = false }: SearchBarProps) {
     "Condo", "Terrace", "Land", "Semi-D", "Bungalow", "Townhouse", "Apartment", "Studio"
   ];
 
-  const bedroomOptions = ["Any", "1", "2", "3", "4", "5+"];
-  const bathroomOptions = ["Any", "1", "2", "3", "4", "5+"];
+  const bedroomOptions = ["any", "1", "2", "3", "4", "5+"];
+  const bathroomOptions = ["any", "1", "2", "3", "4", "5+"];
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -69,20 +69,20 @@ export function SearchBar({ onSearch, isEmbedded = false }: SearchBarProps) {
   const handleSearch = () => {
     const filters = {
       location,
-      propertyType,
+      propertyType: propertyType === "any" ? "" : propertyType,
       priceRange,
-      bedrooms: bedrooms === "Any" ? "" : bedrooms,
-      bathrooms: bathrooms === "Any" ? "" : bathrooms,
+      bedrooms: bedrooms === "any" ? "" : bedrooms,
+      bathrooms: bathrooms === "any" ? "" : bathrooms,
     };
     onSearch(filters);
   };
 
   const clearFilters = () => {
     setLocation("");
-    setPropertyType("");
+    setPropertyType("any");
     setPriceRange([0, 5000000]);
-    setBedrooms("");
-    setBathrooms("");
+    setBedrooms("any");
+    setBathrooms("any");
   };
 
   const formatPrice = (price: number) => {
@@ -145,7 +145,7 @@ export function SearchBar({ onSearch, isEmbedded = false }: SearchBarProps) {
                 <SelectValue placeholder="Property Type" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Any Type</SelectItem>
+                <SelectItem value="any">Any Type</SelectItem>
                 {propertyTypes.map((type) => (
                   <SelectItem key={type} value={type}>
                     {type}
@@ -225,7 +225,7 @@ export function SearchBar({ onSearch, isEmbedded = false }: SearchBarProps) {
                   <SelectValue placeholder="Select type" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Any Type</SelectItem>
+                  <SelectItem value="any">Any Type</SelectItem>
                   {propertyTypes.map((type) => (
                     <SelectItem key={type} value={type}>
                       {type}
@@ -256,7 +256,7 @@ export function SearchBar({ onSearch, isEmbedded = false }: SearchBarProps) {
                 <span>{showFilters ? 'Hide' : 'Show'} Advanced Filters</span>
               </Button>
               
-              {(location || propertyType || bedrooms || bathrooms || priceRange[1] !== 5000000) && (
+              {(location || propertyType !== "any" || bedrooms !== "any" || bathrooms !== "any" || priceRange[1] !== 5000000) && (
                 <Button
                   variant="outline"
                   onClick={clearFilters}
@@ -282,7 +282,7 @@ export function SearchBar({ onSearch, isEmbedded = false }: SearchBarProps) {
                     <SelectContent>
                       {bedroomOptions.map((option) => (
                         <SelectItem key={option} value={option}>
-                          {option}
+                          {option === "any" ? "Any" : option}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -301,7 +301,7 @@ export function SearchBar({ onSearch, isEmbedded = false }: SearchBarProps) {
                     <SelectContent>
                       {bathroomOptions.map((option) => (
                         <SelectItem key={option} value={option}>
-                          {option}
+                          {option === "any" ? "Any" : option}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -341,7 +341,7 @@ export function SearchBar({ onSearch, isEmbedded = false }: SearchBarProps) {
           </div>
 
           {/* Active Filters Display */}
-          {(location || propertyType || bedrooms || bathrooms || priceRange[1] !== 5000000) && (
+          {(location || propertyType !== "any" || bedrooms !== "any" || bathrooms !== "any" || priceRange[1] !== 5000000) && (
             <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
               <div className="flex items-center space-x-2 flex-wrap gap-2">
                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Active Filters:</span>
@@ -357,34 +357,34 @@ export function SearchBar({ onSearch, isEmbedded = false }: SearchBarProps) {
                     </button>
                   </Badge>
                 )}
-                {propertyType && (
+                {propertyType !== "any" && (
                   <Badge variant="secondary" className="flex items-center space-x-1">
                     <Home className="h-3 w-3" />
                     <span>{propertyType}</span>
                     <button
-                      onClick={() => setPropertyType("")}
+                      onClick={() => setPropertyType("any")}
                       className="ml-1 hover:text-red-500"
                     >
                       <X className="h-3 w-3" />
                     </button>
                   </Badge>
                 )}
-                {bedrooms && bedrooms !== "Any" && (
+                {bedrooms !== "any" && (
                   <Badge variant="secondary">
                     {bedrooms} Bedroom{bedrooms !== "1" ? "s" : ""}
                     <button
-                      onClick={() => setBedrooms("")}
+                      onClick={() => setBedrooms("any")}
                       className="ml-1 hover:text-red-500"
                     >
                       <X className="h-3 w-3" />
                     </button>
                   </Badge>
                 )}
-                {bathrooms && bathrooms !== "Any" && (
+                {bathrooms !== "any" && (
                   <Badge variant="secondary">
                     {bathrooms} Bathroom{bathrooms !== "1" ? "s" : ""}
                     <button
-                      onClick={() => setBathrooms("")}
+                      onClick={() => setBathrooms("any")}
                       className="ml-1 hover:text-red-500"
                     >
                       <X className="h-3 w-3" />
