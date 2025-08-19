@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Property } from "@/types/property";
 import { 
   Search, 
   TrendingUp, 
@@ -14,43 +15,6 @@ import {
   Users,
   ArrowRight
 } from "lucide-react";
-
-interface Property {
-  id: string;
-  title: string;
-  description: string;
-  price: number;
-  priceType: "sale" | "rent";
-  location: {
-    neighborhood: string;
-    city: string;
-    state: string;
-    coordinates: {
-      lat: number;
-      lng: number;
-    };
-  };
-  propertyType: string;
-  size: {
-    sqft: number;
-    sqm: number;
-  };
-  bedrooms: number;
-  bathrooms: number;
-  images: string[];
-  features: string[];
-  agent: {
-    id: string;
-    name: string;
-    phone: string;
-    whatsapp: string;
-    email: string;
-    avatar: string;
-  };
-  status: string;
-  createdAt: string;
-  updatedAt: string;
-}
 
 export default function HomePage() {
   const [properties, setProperties] = useState<Property[]>([]);
@@ -73,13 +37,7 @@ export default function HomePage() {
     }
   };
 
-  const handleSearch = (filters: {
-    location: string;
-    propertyType: string;
-    priceRange: [number, number];
-    bedrooms: string;
-    bathrooms: string;
-  }) => {
+  const handleSearch = (filters: any) => {
     console.log('Search filters:', filters);
     // Implement search logic here
   };
@@ -254,11 +212,16 @@ export default function HomePage() {
             </div>
           )}
 
-          <div className="text-center mt-12">
-            <Button size="lg" className="px-8 py-3">
+          <div className="text-center mt-12 space-y-4">
+            <Button size="lg" className="px-8 py-3" onClick={() => window.location.href = '/properties'}>
               View All Properties
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
+            <div>
+              <Button variant="outline" size="sm" onClick={() => window.location.href = '/demo'}>
+                View Demo
+              </Button>
+            </div>
           </div>
         </div>
       </section>

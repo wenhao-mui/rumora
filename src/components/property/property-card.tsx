@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -16,51 +17,25 @@ import {
   Ruler, 
   Star,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  ExternalLink
 } from "lucide-react";
 
+import { Property } from "@/types/property";
+
 interface PropertyCardProps {
-  property: {
-    id: string;
-    title: string;
-    description: string;
-    price: number;
-    priceType: "sale" | "rent";
-    location: {
-      neighborhood: string;
-      city: string;
-      state: string;
-      coordinates: {
-        lat: number;
-        lng: number;
-      };
-    };
-    propertyType: string;
-    size: {
-      sqft: number;
-      sqm: number;
-    };
-    bedrooms: number;
-    bathrooms: number;
-    images: string[];
-    features: string[];
-    agent: {
-      id: string;
-      name: string;
-      phone: string;
-      whatsapp: string;
-      email: string;
-      avatar: string;
-    };
-    status: string;
-    createdAt: string;
-    updatedAt: string;
-  };
+  property: Property;
+  onContact?: (type: 'whatsapp' | 'call' | 'message', property: Property) => void;
 }
 
 export function PropertyCard({ property }: PropertyCardProps) {
+  const router = useRouter();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
+
+  const handleCardClick = () => {
+    router.push(`/properties/${property.id}`);
+  };
 
   const nextImage = () => {
     setCurrentImageIndex((prev) => 
@@ -93,7 +68,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
   };
 
   return (
-    <Card className="w-full overflow-hidden hover:shadow-lg transition-shadow duration-300">
+    <Card className="w-full overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer" onClick={handleCardClick}>
       {/* Image Carousel */}
       <div className="relative group">
         <div className="aspect-[4/3] overflow-hidden">
@@ -240,19 +215,40 @@ export function PropertyCard({ property }: PropertyCardProps) {
           </div>
         </div>
 
+        {/* View Details Button */}
+        <div className="mb-3">
+          <Button 
+            variant="outline" 
+            className="w-full flex items-center justify-center space-x-2"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleCardClick();
+            }}
+          >
+            <ExternalLink className="h-4 w-4" />
+            <span>View Details</span>
+          </Button>
+        </div>
+
         {/* Contact Buttons */}
         <div className="grid grid-cols-2 gap-3">
           <Button 
             variant="outline" 
             className="flex items-center justify-center space-x-2"
-            onClick={() => window.open(`tel:${property.agent.phone}`)}
+            onClick={(e) => {
+              e.stopPropagation();
+              window.open(`tel:${property.agent.phone}`);
+            }}
           >
             <Phone className="h-4 w-4" />
             <span>Call</span>
           </Button>
           <Button 
             className="flex items-center justify-center space-x-2 bg-green-600 hover:bg-green-700"
-            onClick={() => window.open(`https://wa.me/${property.agent.whatsapp}`)}
+            onClick={(e) => {
+              e.stopPropagation();
+              window.open(`https://wa.me/${property.agent.whatsapp}`);
+            }}
           >
             <MessageCircle className="h-4 w-4" />
             <span>WhatsApp</span>

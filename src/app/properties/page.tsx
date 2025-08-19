@@ -186,7 +186,6 @@ export default function PropertiesPage() {
                   <PropertyCard
                     key={property.id}
                     property={property}
-                    onContact={(type) => handleContact(type, property)}
                   />
                 ))}
               </div>

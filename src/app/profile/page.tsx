@@ -288,7 +288,6 @@ export default function PublicUserProfile() {
                       <PropertyCard
                         key={property.id}
                         property={property}
-                        onContact={handleContact}
                       />
                     ))}
                   </div>

@@ -9,12 +9,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 
-interface SearchFilters {
-  location: string;
-  propertyType: string;
-  priceRange: [number, number];
-  bedrooms: string;
-  bathrooms: string;
+import { SearchFilters } from "@/types/property";
+
+interface SearchBarProps {
+  onSearch: (filters: SearchFilters) => void;
+  isEmbedded?: boolean;
+  initialFilters?: SearchFilters;
 }
 
 interface SearchBarProps {
@@ -74,12 +74,15 @@ export function SearchBar({ onSearch, isEmbedded = false }: SearchBarProps) {
   };
 
   const handleSearch = () => {
-    const filters = {
+    const filters: SearchFilters = {
       location,
-      propertyType: propertyType === "any" ? "" : propertyType,
-      priceRange,
-      bedrooms: bedrooms === "any" ? "" : bedrooms,
-      bathrooms: bathrooms === "any" ? "" : bathrooms,
+      propertyType: propertyType === "any" ? undefined : propertyType as any,
+      priceRange: {
+        min: priceRange[0],
+        max: priceRange[1]
+      },
+      bedrooms: bedrooms === "any" ? undefined : parseInt(bedrooms),
+      bathrooms: bathrooms === "any" ? undefined : parseInt(bathrooms),
     };
     onSearch(filters);
   };
