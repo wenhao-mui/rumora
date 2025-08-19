@@ -54,7 +54,7 @@ export function SettingsPanel({
               </label>
               <input
                 type="text"
-                value={component.props.title || ''}
+                value={String(component.props.title || '')}
                 onChange={(e) => handlePropertyChange('title', e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="Enter title"
@@ -65,7 +65,7 @@ export function SettingsPanel({
                 Content
               </label>
               <textarea
-                value={component.props.content || ''}
+                value={String(component.props.content || '')}
                 onChange={(e) => handlePropertyChange('content', e.target.value)}
                 rows={3}
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -84,7 +84,7 @@ export function SettingsPanel({
               </label>
               <input
                 type="text"
-                value={component.props.title || ''}
+                value={String(component.props.title || '')}
                 onChange={(e) => handlePropertyChange('title', e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="Enter title"
@@ -95,7 +95,7 @@ export function SettingsPanel({
                 Column 1 Content
               </label>
               <textarea
-                value={component.props.col1Content || ''}
+                value={String(component.props.col1Content || '')}
                 onChange={(e) => handlePropertyChange('col1Content', e.target.value)}
                 rows={3}
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -107,7 +107,7 @@ export function SettingsPanel({
                 Column 2 Content
               </label>
               <textarea
-                value={component.props.col2Content || ''}
+                value={String(component.props.col2Content || '')}
                 onChange={(e) => handlePropertyChange('col2Content', e.target.value)}
                 rows={3}
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"

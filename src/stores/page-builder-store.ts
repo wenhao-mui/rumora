@@ -2,12 +2,21 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { ComponentData, ComponentType, PageLayout } from '@/types/page-builder';
 
+interface HistoryState {
+  components: ComponentData[];
+  selectedComponent: ComponentData | null;
+}
+
 interface PageBuilderStore {
   // State
   components: ComponentData[];
   selectedComponent: ComponentData | null;
   layouts: PageLayout[];
   currentLayoutId: string | null;
+  
+  // History State
+  history: HistoryState[];
+  historyIndex: number;
   
   // Actions
   addComponent: (component: ComponentData) => void;
@@ -24,6 +33,7 @@ interface PageBuilderStore {
   duplicateLayout: (layoutId: string) => void;
   
   // History Management
+  saveToHistory: () => void;
   undo: () => void;
   redo: () => void;
   canUndo: () => boolean;
@@ -44,6 +54,10 @@ export const usePageBuilderStore = create<PageBuilderStore>()(
       selectedComponent: null,
       layouts: [],
       currentLayoutId: null,
+      
+      // History State
+      history: [],
+      historyIndex: -1,
       
       // Component Actions
       addComponent: (component: ComponentData) => {

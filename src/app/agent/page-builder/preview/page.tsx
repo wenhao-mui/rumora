@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ComponentData } from "@/types/page-builder";
 
 export default function PagePreview() {
@@ -35,11 +35,18 @@ export default function PagePreview() {
         );
       
       case 'heading':
-        const HeadingTag = props.level || 'h1';
-        return (
-          <HeadingTag key={component.id} style={style} className="min-w-[200px] min-h-[40px]">
-            {props.content}
-          </HeadingTag>
+        const HeadingTag = (props.level as string) || 'h1';
+        const validHeadings = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
+        const TagName = validHeadings.includes(HeadingTag) ? HeadingTag : 'h1';
+        
+        return React.createElement(
+          TagName,
+          {
+            key: component.id,
+            style: style,
+            className: "min-w-[200px] min-h-[40px]"
+          },
+          String(props.content || '')
         );
       
       case 'button':
@@ -53,8 +60,8 @@ export default function PagePreview() {
         return (
           <img
             key={component.id}
-            src={props.src}
-            alt={props.alt}
+            src={String(props.src || '')}
+            alt={String(props.alt || '')}
             style={style}
             className="min-w-[200px] min-h-[150px] object-cover"
           />
@@ -99,7 +106,7 @@ export default function PagePreview() {
           <div key={component.id} style={style} className="min-w-[600px] min-h-[400px]">
             <h3 className="text-2xl font-semibold mb-6 text-center">{props.title}</h3>
             <div className="grid grid-cols-3 gap-4">
-              {Array.from({ length: Math.min(props.count, 6) }).map((_, i) => (
+              {Array.from({ length: Math.min(Number(props.count) || 3, 6) }).map((_, i) => (
                 <div key={i} className="bg-white p-4 rounded-lg shadow">
                   <div className="w-full h-24 bg-gray-200 rounded mb-2"></div>
                   <h4 className="font-medium">Property {i + 1}</h4>
@@ -117,7 +124,7 @@ export default function PagePreview() {
       
       case 'spacer':
         return (
-          <div key={component.id} style={{ height: props.height || 40 }} className="min-w-[100px]" />
+          <div key={component.id} style={{ height: Number(props.height) || 40 }} className="min-w-[100px]" />
         );
       
       case 'container-1col':
