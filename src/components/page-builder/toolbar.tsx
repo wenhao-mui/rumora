@@ -1,52 +1,66 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 import { 
-  Grid3X3, 
   ZoomIn, 
   ZoomOut, 
-  RotateCcw, 
+  Grid3X3, 
   Save, 
+  RotateCcw, 
+  Eye, 
   Download, 
-  Upload, 
-  Eye,
-  Trash2,
-  Undo,
-  Redo,
+  Upload,
+  Undo2,
+  Redo2,
+  Settings,
   ChevronDown
 } from "lucide-react";
-import { usePageBuilderStore } from "@/stores/page-builder-store";
 
 interface ToolbarProps {
+  zoom: number;
+  onZoomIn: () => void;
+  onZoomOut: () => void;
+  onZoomReset: () => void;
   showGrid: boolean;
   onToggleGrid: () => void;
-  zoom: number;
-  onZoomChange: (zoom: number) => void;
   onSave: () => void;
-  onLoad?: () => void; // Made optional since toolbar handles loading internally
   onClear: () => void;
   onPreview: () => void;
+  onUndo: () => void;
+  onRedo: () => void;
+  canUndo: boolean;
+  canRedo: boolean;
+  savedLayouts: Array<{ id: string; name: string; timestamp: string }>;
+  onLoadLayout: (layoutId: string) => void;
 }
 
 export function Toolbar({
+  zoom,
+  onZoomIn,
+  onZoomOut,
+  onZoomReset,
   showGrid,
   onToggleGrid,
-  zoom,
-  onZoomChange,
   onSave,
   onClear,
-  onPreview
+  onPreview,
+  onUndo,
+  onRedo,
+  canUndo,
+  canRedo,
+  savedLayouts,
+  onLoadLayout
 }: ToolbarProps) {
-  const { canUndo, canRedo, undo, redo, exportLayout, importLayout, layouts, loadLayout } = usePageBuilderStore();
-  const [showLayoutDropdown, setShowLayoutDropdown] = useState(false);
+  const [showLoadDropdown, setShowLoadDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setShowLayoutDropdown(false);
+        setShowLoadDropdown(false);
       }
     };
 
@@ -54,236 +68,162 @@ export function Toolbar({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleZoomIn = () => {
-    onZoomChange(Math.min(zoom + 25, 200));
-  };
-
-  const handleZoomOut = () => {
-    onZoomChange(Math.max(zoom - 25, 25));
-  };
-
-  const handleZoomReset = () => {
-    onZoomChange(100);
-  };
-
-  const handleExport = () => {
-    const data = exportLayout();
-    const blob = new Blob([data], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `rumora-layout-${new Date().toISOString().split('T')[0]}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
-
-  const handleImport = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.json';
-    input.onchange = (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const content = e.target?.result as string;
-          if (content) {
-            importLayout(content);
-          }
-        };
-        reader.readAsText(file);
-      }
-    };
-    input.click();
-  };
-
-  const handleLoadLayout = (layoutId: string) => {
-    loadLayout(layoutId);
-    setShowLayoutDropdown(false);
+  const formatTimestamp = (timestamp: string) => {
+    const date = new Date(timestamp);
+    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-3">
-      <div className="flex items-center justify-between">
-        {/* Left Section - Grid & Zoom Controls */}
-        <div className="flex items-center space-x-4">
-          {/* Grid Toggle */}
-          <Button
-            variant={showGrid ? "default" : "outline"}
-            size="sm"
-            onClick={onToggleGrid}
-            className="flex items-center space-x-2"
-          >
-            <Grid3X3 className="h-4 w-4" />
-            <span className="hidden sm:inline">Grid</span>
-          </Button>
-
-          {/* Zoom Controls */}
-          <div className="flex items-center space-x-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleZoomOut}
-              disabled={zoom <= 25}
-            >
-              <ZoomOut className="h-4 w-4" />
-            </Button>
-            
-            <div className="flex items-center space-x-2 px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-md">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300 min-w-[3rem] text-center">
-                {zoom}%
-              </span>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleZoomReset}
-                className="h-6 px-2 text-xs"
-              >
-                Reset
-              </Button>
-            </div>
-            
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleZoomIn}
-              disabled={zoom >= 200}
-            >
-              <ZoomIn className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-
-        {/* Center Section - History Controls */}
-        <div className="flex items-center space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={undo}
-            disabled={!canUndo()}
-            title="Undo (Ctrl+Z)"
-          >
-            <Undo className="h-4 w-4" />
-          </Button>
-          
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={redo}
-            disabled={!canRedo()}
-            title="Redo (Ctrl+Y)"
-          >
-            <Redo className="h-4 w-4" />
-          </Button>
-        </div>
-
-        {/* Right Section - Action Buttons */}
-        <div className="flex items-center space-x-2">
-          {/* Import/Export */}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleImport}
-            className="flex items-center space-x-2"
-          >
-            <Upload className="h-4 w-4" />
-            <span className="hidden sm:inline">Import</span>
-          </Button>
-          
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleExport}
-            className="flex items-center space-x-2"
-          >
-            <Download className="h-4 w-4" />
-            <span className="hidden sm:inline">Export</span>
-          </Button>
-
-          {/* Layout Actions */}
-          <div className="relative" ref={dropdownRef}>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowLayoutDropdown(!showLayoutDropdown)}
-              className="flex items-center space-x-2"
-            >
-              <RotateCcw className="h-4 w-4" />
-              <span className="hidden sm:inline">Load</span>
-              <ChevronDown className="h-4 w-4" />
-            </Button>
-            
-            {/* Layout Dropdown */}
-            {showLayoutDropdown && (
-              <div className="absolute top-full right-0 mt-1 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50">
-                <div className="p-2">
-                  {layouts.length === 0 ? (
-                    <div className="text-center py-4 text-gray-500">
-                      <p>No saved layouts</p>
-                    </div>
-                  ) : (
-                    <div className="space-y-1">
-                      {layouts.map((layout) => (
-                        <button
-                          key={layout.id}
-                          onClick={() => handleLoadLayout(layout.id)}
-                          className="w-full text-left p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-sm"
-                        >
-                          <div className="font-medium">{layout.name}</div>
-                          <div className="text-xs text-gray-500">
-                            {new Date(layout.updatedAt).toLocaleDateString()}
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-          
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={onSave}
-            className="flex items-center space-x-2"
-          >
-            <Save className="h-4 w-4" />
-            <span className="hidden sm:inline">Save</span>
-          </Button>
-
-          {/* Preview */}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={onPreview}
-            className="flex items-center space-x-2"
-          >
-            <Eye className="h-4 w-4" />
-            <span className="text-sm">Preview</span>
-          </Button>
-
-          {/* Clear */}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={onClear}
-            className="flex items-center space-x-2 text-red-600 hover:text-red-700 hover:bg-red-50"
-          >
-            <Trash2 className="h-4 w-4" />
-            <span className="hidden sm:inline">Clear</span>
-          </Button>
-        </div>
+    <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-3 flex items-center justify-between">
+      {/* Left Section - Zoom Controls */}
+      <div className="flex items-center space-x-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onZoomOut}
+          disabled={zoom <= 25}
+          className="h-8 w-8 p-0"
+        >
+          <ZoomOut className="h-4 w-4" />
+        </Button>
+        
+        <Badge variant="secondary" className="min-w-[60px] text-center">
+          {zoom}%
+        </Badge>
+        
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onZoomIn}
+          disabled={zoom >= 200}
+          className="h-8 w-8 p-0"
+        >
+          <ZoomIn className="h-4 w-4" />
+        </Button>
+        
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onZoomReset}
+          className="h-8 px-2 text-xs"
+        >
+          Reset
+        </Button>
       </div>
 
-      {/* Keyboard Shortcuts Info */}
-      <div className="mt-2 text-xs text-gray-500 dark:text-gray-400 text-center">
-        <span className="mr-4">Delete: Remove selected component</span>
-        <span className="mr-4">Escape: Deselect component</span>
-        <span className="mr-4">Ctrl+Z: Undo</span>
-        <span>Ctrl+Y: Redo</span>
+      {/* Center Section - Grid Toggle */}
+      <div className="flex items-center space-x-2">
+        <Button
+          variant={showGrid ? "default" : "outline"}
+          size="sm"
+          onClick={onToggleGrid}
+          className="h-8 px-3"
+        >
+          <Grid3X3 className="h-4 w-4 mr-2" />
+          Grid
+        </Button>
+      </div>
+
+      {/* Right Section - Actions */}
+      <div className="flex items-center space-x-2">
+        {/* Undo/Redo */}
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onUndo}
+          disabled={!canUndo}
+          className="h-8 w-8 p-0"
+          title="Undo"
+        >
+          <Undo2 className="h-4 w-4" />
+        </Button>
+        
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onRedo}
+          disabled={!canRedo}
+          className="h-8 w-8 p-0"
+          title="Redo"
+        >
+          <Redo2 className="h-4 w-4" />
+        </Button>
+
+        <Separator orientation="vertical" className="h-6" />
+
+        {/* Load Layout Dropdown */}
+        <div className="relative" ref={dropdownRef}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowLoadDropdown(!showLoadDropdown)}
+            className="h-8 px-3"
+            disabled={savedLayouts.length === 0}
+          >
+            <Upload className="h-4 w-4 mr-2" />
+            Load
+            <ChevronDown className="h-4 w-4 ml-1" />
+          </Button>
+          
+          {showLoadDropdown && savedLayouts.length > 0 && (
+            <div className="absolute right-0 top-full mt-1 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg z-50 max-h-60 overflow-y-auto">
+              <div className="p-2">
+                <div className="text-xs font-medium text-gray-500 dark:text-gray-400 px-2 py-1 mb-2">
+                  Saved Layouts
+                </div>
+                {savedLayouts.map((layout) => (
+                  <button
+                    key={layout.id}
+                    onClick={() => {
+                      onLoadLayout(layout.id);
+                      setShowLoadDropdown(false);
+                    }}
+                    className="w-full text-left px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
+                  >
+                    <div className="font-medium">{layout.name}</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                      {formatTimestamp(layout.timestamp)}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Save */}
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onSave}
+          className="h-8 px-3"
+        >
+          <Save className="h-4 w-4 mr-2" />
+          Save
+        </Button>
+
+        {/* Clear */}
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onClear}
+          className="h-8 px-3"
+        >
+          <RotateCcw className="h-4 w-4 mr-2" />
+          Clear
+        </Button>
+
+        <Separator orientation="vertical" className="h-6" />
+
+        {/* Preview */}
+        <Button
+          size="sm"
+          onClick={onPreview}
+          className="h-8 px-3"
+        >
+          <Eye className="h-4 w-4 mr-2" />
+          Preview
+        </Button>
       </div>
     </div>
   );

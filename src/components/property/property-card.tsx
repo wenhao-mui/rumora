@@ -2,69 +2,47 @@
 
 import { useState } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { 
-  ChevronLeft, 
-  ChevronRight, 
-  Bed, 
-  Bath, 
-  MapPin, 
+  Heart, 
+  Share2, 
   Phone, 
   MessageCircle, 
-  Heart,
-  Ruler,
-  Star
+  MapPin, 
+  Bed, 
+  Bath, 
+  Ruler, 
+  Star,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
-import { Property, PropertyFeature } from "@/types/property";
 
 interface PropertyCardProps {
-  property: Property;
-  onContact?: (type: 'whatsapp' | 'call' | 'message') => void;
+  property: {
+    id: string;
+    title: string;
+    price: number;
+    location: string;
+    propertyType: string;
+    size: number;
+    bedrooms: number;
+    bathrooms: number;
+    images: string[];
+    isNew?: boolean;
+    highlights?: string[];
+    agent: {
+      name: string;
+      phone: string;
+      whatsapp: string;
+    };
+  };
 }
 
-const FEATURE_LABELS: Record<PropertyFeature, string> = {
-  'newly-renovated': 'Newly Renovated',
-  'freehold': 'Freehold',
-  'high-floor': 'High Floor',
-  'corner-unit': 'Corner Unit',
-  'garden-view': 'Garden View',
-  'city-view': 'City View',
-  'furnished': 'Furnished',
-  'pet-friendly': 'Pet Friendly',
-  'gym': 'Gym',
-  'pool': 'Pool',
-  'security': 'Security',
-  'parking': 'Parking'
-};
-
-const FEATURE_COLORS: Record<PropertyFeature, string> = {
-  'newly-renovated': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-  'freehold': 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-  'high-floor': 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
-  'corner-unit': 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
-  'garden-view': 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200',
-  'city-view': 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200',
-  'furnished': 'bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-200',
-  'pet-friendly': 'bg-rose-100 text-rose-800 dark:bg-rose-900 dark:text-rose-200',
-  'gym': 'bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-200',
-  'pool': 'bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200',
-  'security': 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200',
-  'parking': 'bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-200'
-};
-
-export function PropertyCard({ property, onContact }: PropertyCardProps) {
+export function PropertyCard({ property }: PropertyCardProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("en-MY", {
-      style: "currency",
-      currency: "MYR",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price);
-  };
 
   const nextImage = () => {
     setCurrentImageIndex((prev) => 
@@ -78,217 +56,188 @@ export function PropertyCard({ property, onContact }: PropertyCardProps) {
     );
   };
 
-  const handleContact = (type: 'whatsapp' | 'call' | 'message') => {
-    if (onContact) {
-      onContact(type);
-    } else {
-      // Default contact handling
-      switch (type) {
-        case 'whatsapp':
-          window.open(`https://wa.me/${property.agent.whatsapp}?text=Hi, I'm interested in ${property.title}`, '_blank');
-          break;
-        case 'call':
-          window.open(`tel:${property.agent.phone}`, '_blank');
-          break;
-        case 'message':
-          window.open(`mailto:${property.agent.email}?subject=Inquiry about ${property.title}`, '_blank');
-          break;
-      }
+  const formatPrice = (price: number) => {
+    if (price >= 1000000) {
+      return `RM ${(price / 1000000).toFixed(1)}M`;
+    } else if (price >= 1000) {
+      return `RM ${(price / 1000).toFixed(0)}K`;
     }
+    return `RM ${price}`;
   };
 
-  const isNewProperty = () => {
-    const createdAt = new Date(property.createdAt);
-    const now = new Date();
-    const diffTime = Math.abs(now.getTime() - createdAt.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays <= 7;
+  const formatSize = (size: number) => {
+    return `${size.toLocaleString()} sqft`;
+  };
+
+  const isNewProperty = (id: string) => {
+    // Simple logic: properties with ID > 5 are considered "new"
+    return parseInt(id) > 5;
   };
 
   return (
-    <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 group border-0 shadow-md">
+    <Card className="w-full overflow-hidden hover:shadow-lg transition-shadow duration-300">
       {/* Image Carousel */}
       <div className="relative group">
-        <div className="aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-gray-800">
+        <div className="aspect-[4/3] overflow-hidden">
           <img
             src={property.images[currentImageIndex]}
-            alt={`${property.title} - Image ${currentImageIndex + 1}`}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-            loading="lazy"
+            alt={property.title}
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
         </div>
 
-        {/* Navigation Arrows - Hidden on mobile, visible on hover */}
-        {property.images.length > 1 && (
-          <>
-            <button
-              onClick={prevImage}
-              className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-200 md:block hidden"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </button>
-            <button
-              onClick={nextImage}
-              className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-200 md:block hidden"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </button>
-          </>
-        )}
+        {/* Navigation Arrows */}
+        <button
+          onClick={prevImage}
+          className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </button>
+        <button
+          onClick={nextImage}
+          className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+        >
+          <ChevronRight className="h-4 w-4" />
+        </button>
 
-        {/* Mobile Swipe Indicators */}
-        {property.images.length > 1 && (
-          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5">
-            {property.images.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentImageIndex(index)}
-                className={`w-2.5 h-2.5 rounded-full transition-all duration-200 ${
-                  index === currentImageIndex 
-                    ? 'bg-white scale-125' 
-                    : 'bg-white/60 hover:bg-white/80'
-                }`}
-              />
-            ))}
-          </div>
-        )}
+        {/* Image Indicators */}
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex space-x-1">
+          {property.images.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentImageIndex(index)}
+              className={`w-2 h-2 rounded-full transition-colors ${
+                index === currentImageIndex 
+                  ? 'bg-white' 
+                  : 'bg-white/50 hover:bg-white/75'
+              }`}
+            />
+          ))}
+        </div>
 
-        {/* Top Badges */}
-        <div className="absolute top-3 left-3 flex flex-col gap-2">
-          {/* Price Badge */}
-          <Badge className="bg-primary text-primary-foreground font-bold text-sm px-3 py-1.5 shadow-lg">
-            {property.priceType === 'rent' ? 'RM' : ''}{formatPrice(property.price)}
-            {property.priceType === 'rent' && '/month'}
-          </Badge>
-          
-          {/* New Property Badge */}
-          {isNewProperty() && (
-            <Badge className="bg-green-500 text-white font-medium text-xs px-2 py-1 shadow-lg">
-              <Star className="h-3 w-3 mr-1" />
+        {/* Top Right Actions */}
+        <div className="absolute top-2 right-2 flex space-x-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsFavorite(!isFavorite)}
+            className="bg-white/80 hover:bg-white text-gray-800 hover:text-red-500"
+          >
+            <Heart className={`h-4 w-4 ${isFavorite ? 'fill-red-500 text-red-500' : ''}`} />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="bg-white/80 hover:bg-white text-gray-800"
+          >
+            <Share2 className="h-4 w-4" />
+          </Button>
+        </div>
+
+        {/* Badges */}
+        <div className="absolute top-2 left-2 flex flex-col space-y-2">
+          {isNewProperty(property.id) && (
+            <Badge className="bg-green-500 hover:bg-green-600 text-white">
               New
             </Badge>
           )}
+          {property.highlights?.map((highlight, index) => (
+            <Badge key={index} variant="secondary" className="bg-blue-500 hover:bg-blue-600 text-white">
+              {highlight}
+            </Badge>
+          ))}
         </div>
-
-        {/* Favorite Button */}
-        <button
-          onClick={() => setIsFavorite(!isFavorite)}
-          className="absolute top-3 right-3 bg-white/95 hover:bg-white p-2.5 rounded-full shadow-lg transition-all duration-200 hover:scale-110"
-        >
-          <Heart 
-            className={`h-5 w-5 ${
-              isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-600'
-            }`} 
-          />
-        </button>
-
-        {/* Image Counter */}
-        {property.images.length > 1 && (
-          <div className="absolute top-3 right-16 bg-black/60 text-white text-xs px-2 py-1 rounded-full">
-            {currentImageIndex + 1}/{property.images.length}
-          </div>
-        )}
       </div>
 
-      {/* Property Information */}
-      <CardHeader className="pb-3 px-4 pt-4">
-        <div className="space-y-3">
-          <h3 className="font-bold text-lg leading-tight line-clamp-2 hover:text-primary transition-colors cursor-pointer group-hover:text-primary">
-            {property.title}
-          </h3>
-          
-          <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
-            <MapPin className="h-4 w-4 mr-2 text-primary flex-shrink-0" />
-            <span className="line-clamp-1">{property.location.neighborhood}, {property.location.city}</span>
+      <CardHeader className="pb-3">
+        {/* Price */}
+        <div className="flex items-center justify-between mb-2">
+          <div className="text-2xl font-bold text-gray-900">
+            {formatPrice(property.price)}
           </div>
+          <Badge variant="outline" className="text-sm">
+            {property.propertyType}
+          </Badge>
+        </div>
 
-          <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
-            <div className="flex items-center gap-1.5">
-              <Bed className="h-4 w-4 text-primary" />
-              <span className="font-medium">{property.bedrooms} bed</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <Bath className="h-4 w-4 text-primary" />
-              <span className="font-medium">{property.bathrooms} bath</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <Ruler className="h-4 w-4 text-primary" />
-              <span className="font-medium">{property.size.sqft.toLocaleString()} sqft</span>
-            </div>
-          </div>
+        {/* Title */}
+        <h3 className="text-lg font-semibold text-gray-900 line-clamp-2 mb-2">
+          {property.title}
+        </h3>
+
+        {/* Location */}
+        <div className="flex items-center text-gray-600 text-sm">
+          <MapPin className="h-4 w-4 mr-1" />
+          <span className="line-clamp-1">{property.location}</span>
         </div>
       </CardHeader>
 
-      <CardContent className="pt-0 px-4 pb-4">
-        {/* Feature Tags */}
-        {property.features.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-4">
-            {property.features.slice(0, 3).map((feature) => (
-              <Badge
-                key={feature}
-                variant="secondary"
-                className={`text-xs font-medium px-2 py-1 ${FEATURE_COLORS[feature]}`}
-              >
-                {FEATURE_LABELS[feature]}
-              </Badge>
-            ))}
-            {property.features.length > 3 && (
-              <Badge variant="outline" className="text-xs px-2 py-1">
-                +{property.features.length - 3} more
-              </Badge>
-            )}
-          </div>
-        )}
-
-        {/* Agent Contact Section */}
-        <div className="border-t border-gray-100 dark:border-gray-700 pt-4">
-          <div className="flex items-center gap-3 mb-4">
-            <img
-              src={property.agent.avatar}
-              alt={property.agent.name}
-              className="w-12 h-12 rounded-full object-cover border-2 border-gray-200 dark:border-gray-600"
-            />
-            <div className="flex-1 min-w-0">
-              <div className="font-semibold text-sm text-gray-900 dark:text-white truncate">
-                {property.agent.name}
-              </div>
-              <div className="text-xs text-gray-500 dark:text-gray-400">Property Agent</div>
+      <CardContent className="pt-0">
+        {/* Property Details */}
+        <div className="grid grid-cols-3 gap-4 mb-4">
+          <div className="flex items-center space-x-2">
+            <Bed className="h-4 w-4 text-gray-500" />
+            <div className="text-sm">
+              <div className="font-medium text-gray-900">{property.bedrooms}</div>
+              <div className="text-gray-500">Bedrooms</div>
             </div>
           </div>
-
-          {/* Contact Buttons - Mobile Optimized */}
-          <div className="grid grid-cols-3 gap-2">
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => handleContact('whatsapp')}
-              className="text-xs h-9 hover:bg-green-50 hover:border-green-300 hover:text-green-700 transition-all duration-200"
-            >
-              <MessageCircle className="h-3.5 w-3.5 mr-1.5" />
-              <span className="hidden sm:inline">WhatsApp</span>
-              <span className="sm:hidden">WA</span>
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => handleContact('call')}
-              className="text-xs h-9 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 transition-all duration-200"
-            >
-              <Phone className="h-3.5 w-3.5 mr-1.5" />
-              <span className="hidden sm:inline">Call</span>
-              <span className="sm:hidden">Call</span>
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => handleContact('message')}
-              className="text-xs h-9 hover:bg-purple-50 hover:border-purple-300 hover:text-purple-700 transition-all duration-200"
-            >
-              <MessageCircle className="h-3.5 w-3.5 mr-1.5" />
-              <span className="hidden sm:inline">Message</span>
-              <span className="sm:hidden">Msg</span>
-            </Button>
+          <div className="flex items-center space-x-2">
+            <Bath className="h-4 w-4 text-gray-500" />
+            <div className="text-sm">
+              <div className="font-medium text-gray-900">{property.bathrooms}</div>
+              <div className="text-gray-500">Bathrooms</div>
+            </div>
           </div>
+          <div className="flex items-center space-x-2">
+            <Ruler className="h-4 w-4 text-gray-500" />
+            <div className="text-sm">
+              <div className="font-medium text-gray-900">{formatSize(property.size)}</div>
+              <div className="text-gray-500">Size</div>
+            </div>
+          </div>
+        </div>
+
+        <Separator className="my-4" />
+
+        {/* Agent Contact */}
+        <div className="mb-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                <span className="text-blue-600 font-semibold text-sm">
+                  {property.agent.name.charAt(0)}
+                </span>
+              </div>
+              <div>
+                <div className="font-medium text-gray-900">{property.agent.name}</div>
+                <div className="text-sm text-gray-500">Property Agent</div>
+              </div>
+            </div>
+            <div className="flex items-center space-x-1">
+              <Star className="h-4 w-4 text-yellow-400 fill-current" />
+              <span className="text-sm text-gray-600">4.8</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Contact Buttons */}
+        <div className="grid grid-cols-2 gap-3">
+          <Button 
+            variant="outline" 
+            className="flex items-center justify-center space-x-2"
+            onClick={() => window.open(`tel:${property.agent.phone}`)}
+          >
+            <Phone className="h-4 w-4" />
+            <span>Call</span>
+          </Button>
+          <Button 
+            className="flex items-center justify-center space-x-2 bg-green-600 hover:bg-green-700"
+            onClick={() => window.open(`https://wa.me/${property.agent.whatsapp}`)}
+          >
+            <MessageCircle className="h-4 w-4" />
+            <span>WhatsApp</span>
+          </Button>
         </div>
       </CardContent>
     </Card>

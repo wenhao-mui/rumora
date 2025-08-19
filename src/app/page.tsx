@@ -5,88 +5,71 @@ import { SearchBar } from "@/components/property/search-bar";
 import { PropertyCard } from "@/components/property/property-card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { SearchFilters, SearchResult, Property } from "@/types/property";
-import { Search, Grid, List, ChevronDown, Loader2, Filter, MapPin } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { 
+  Search, 
+  Home, 
+  MapPin, 
+  Star, 
+  TrendingUp, 
+  Shield, 
+  Users,
+  ArrowRight,
+  ChevronDown
+} from "lucide-react";
 
-export default function Home() {
-  const [searchResults, setSearchResults] = useState<SearchResult | null>(null);
+interface Property {
+  id: string;
+  title: string;
+  price: number;
+  location: string;
+  propertyType: string;
+  size: number;
+  bedrooms: number;
+  bathrooms: number;
+  images: string[];
+  isNew?: boolean;
+  highlights?: string[];
+  agent: {
+    name: string;
+    phone: string;
+    whatsapp: string;
+  };
+}
+
+export default function HomePage() {
   const [properties, setProperties] = useState<Property[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [showFilters, setShowFilters] = useState(false);
-  const [currentFilters, setCurrentFilters] = useState<SearchFilters>({
-    location: "",
-    priceRange: { min: 0, max: 10000000 },
-    features: []
-  });
 
-  // Load initial properties on page load
   useEffect(() => {
-    loadProperties();
+    fetchProperties();
   }, []);
 
-  const loadProperties = async (filters?: SearchFilters) => {
-    setIsLoading(true);
+  const fetchProperties = async () => {
     try {
-      const url = filters ? '/api/properties/search' : '/api/properties/search';
-      const method = filters ? 'POST' : 'GET';
-      const body = filters ? JSON.stringify(filters) : undefined;
-      
-      const response = await fetch(url, {
-        method,
-        headers: filters ? { 'Content-Type': 'application/json' } : {},
-        body
-      });
-      
-      if (response.ok) {
-        const result: SearchResult = await response.json();
-        setSearchResults(result);
-        setProperties(result.properties);
-      } else {
-        console.error('Failed to fetch properties');
-        setProperties([]);
-      }
+      const response = await fetch('/api/properties/search');
+      const data = await response.json();
+      setProperties(data.properties || []);
     } catch (error) {
-      console.error('Error loading properties:', error);
-      setProperties([]);
+      console.error('Error fetching properties:', error);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
-  const handleSearch = async (filters: SearchFilters) => {
-    setCurrentFilters(filters);
-    await loadProperties(filters);
+  const handleSearch = (filters: any) => {
+    console.log('Search filters:', filters);
+    // Implement search logic here
   };
 
-  const handleContact = (type: 'whatsapp' | 'call' | 'message', property: Property) => {
-    switch (type) {
-      case 'whatsapp':
-        window.open(`https://wa.me/${property.agent.whatsapp}?text=Hi, I'm interested in ${property.title}`, '_blank');
-        break;
-      case 'call':
-        window.open(`tel:${property.agent.phone}`, '_blank');
-        break;
-      case 'message':
-        window.open(`mailto:${property.agent.email}?subject=Inquiry about ${property.title}`, '_blank');
-        break;
-    }
-  };
-
-  const clearFilters = () => {
-    const defaultFilters: SearchFilters = {
-      location: "",
-      priceRange: { min: 0, max: 10000000 },
-      features: []
-    };
-    setCurrentFilters(defaultFilters);
-    loadProperties();
-  };
+  const featuredProperties = properties.slice(0, 6);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Integrated Hero Section with Search */}
-      <div className="relative bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white overflow-hidden">
+      {/* Hero Section */}
+      <section className="relative bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
@@ -94,231 +77,212 @@ export default function Home() {
           }} />
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          {/* Hero Content */}
-          <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">
-              Find Your Perfect Property
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
+          <div className="text-center max-w-4xl mx-auto">
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+              Find Your Perfect
+              <span className="block text-blue-200">Property in Malaysia</span>
             </h1>
-            <p className="text-xl md:text-2xl text-blue-100 max-w-4xl mx-auto mb-8">
-              Discover amazing properties across Malaysia with our comprehensive search and advanced filtering options
+            <p className="text-xl md:text-2xl text-blue-100 mb-8 leading-relaxed">
+              Discover thousands of properties across Malaysia with our advanced search 
+              and trusted agent network
             </p>
             
-            {/* Feature Highlights */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3">
-                <MapPin className="h-5 w-5" />
-                <span className="font-medium">8+ Locations</span>
-              </div>
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3">
-                <Search className="h-5 w-5" />
-                <span className="font-medium">Advanced Search</span>
-              </div>
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3">
-                <Grid className="h-5 w-5" />
-                <span className="font-medium">Multiple Views</span>
-              </div>
+            {/* Search Bar */}
+            <div className="mb-12">
+              <SearchBar onSearch={handleSearch} isEmbedded={true} />
             </div>
-          </div>
 
-          {/* Integrated Search Bar */}
-          <div className="max-w-4xl mx-auto">
-            <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-6 md:p-8">
-              <SearchBar onSearch={handleSearch} initialFilters={currentFilters} isEmbedded={true} />
+            {/* Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto">
+              <div className="text-center">
+                <div className="text-3xl md:text-4xl font-bold mb-2">10,000+</div>
+                <div className="text-blue-200">Properties Available</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl md:text-4xl font-bold mb-2">500+</div>
+                <div className="text-blue-200">Trusted Agents</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl md:text-4xl font-bold mb-2">50+</div>
+                <div className="text-blue-200">Cities Covered</div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Bottom Wave Effect */}
+        {/* Wave SVG */}
         <div className="absolute bottom-0 left-0 right-0">
           <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="w-full h-auto">
-            <path 
-              d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" 
-              opacity=".25" 
+            <path
+              d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z"
+              opacity=".25"
               className="fill-gray-50 dark:fill-gray-900"
             />
-            <path 
-              d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" 
-              opacity=".5" 
+            <path
+              d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z"
+              opacity=".5"
               className="fill-gray-50 dark:fill-gray-900"
             />
-            <path 
-              d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" 
+            <path
+              d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z"
               className="fill-gray-50 dark:fill-gray-900"
             />
           </svg>
         </div>
-      </div>
+      </section>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Results Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-          <div className="flex items-center gap-4">
-            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">
-              {searchResults ? `Found ${searchResults.total} Properties` : 'Browse Properties'}
-            </h2>
-            {currentFilters.location && (
-              <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                <MapPin className="h-4 w-4" />
-                <span>in {currentFilters.location}</span>
-              </div>
-            )}
-          </div>
-
-          <div className="flex items-center gap-3">
-            {/* View Mode Toggle */}
-            <div className="flex items-center border border-gray-200 dark:border-gray-700 rounded-lg p-1">
-              <Button
-                variant={viewMode === 'grid' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setViewMode('grid')}
-                className="h-8 px-3"
-              >
-                <Grid className="h-4 w-4" />
-              </Button>
-              <Button
-                variant={viewMode === 'list' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setViewMode('list')}
-                className="h-8 px-3"
-              >
-                <List className="h-4 w-4" />
-              </Button>
-            </div>
-
-            {/* Filters Toggle */}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowFilters(!showFilters)}
-              className="h-8 px-3"
-            >
-              <Filter className="h-4 w-4 mr-2" />
-              Filters
-            </Button>
-
-            {/* Clear Filters */}
-            {(currentFilters.location || currentFilters.propertyType || currentFilters.bedrooms || currentFilters.bathrooms) && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={clearFilters}
-                className="h-8 px-3 text-gray-600 dark:text-gray-400"
-              >
-                Clear All
-              </Button>
-            )}
-          </div>
-        </div>
-
-        {/* Loading State */}
-        {isLoading && (
-          <div className="flex justify-center items-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <span className="ml-2 text-gray-600 dark:text-gray-400">Searching properties...</span>
-          </div>
-        )}
-
-        {/* Results */}
-        {!isLoading && (
-          <>
-            {properties.length > 0 ? (
-              <div className={`grid gap-6 ${
-                viewMode === 'grid' 
-                  ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' 
-                  : 'grid-cols-1'
-              }`}>
-                {properties.map((property) => (
-                  <PropertyCard
-                    key={property.id}
-                    property={property}
-                    onContact={(type) => handleContact(type, property)}
-                  />
-                ))}
-              </div>
-            ) : (
-              <Card className="text-center py-12">
-                <CardContent>
-                  <Search className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-                    No properties found
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-400 mb-4">
-                    {searchResults ? 
-                      "Try adjusting your search criteria or browse all properties." : 
-                      "Loading properties..."
-                    }
-                  </p>
-                  {searchResults && (
-                    <Button onClick={clearFilters} variant="outline">
-                      Browse All Properties
-                    </Button>
-                  )}
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Load More Button */}
-            {searchResults?.hasMore && (
-              <div className="flex justify-center mt-8">
-                <Button variant="outline" size="lg">
-                  Load More Properties
-                </Button>
-              </div>
-            )}
-          </>
-        )}
-
-        {/* Features Section */}
-        <div className="mt-16 pt-16 border-t border-gray-200 dark:border-gray-700">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+      {/* Features Section */}
+      <section className="py-20 bg-white dark:bg-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Why Choose Rumora Properties?
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              We provide the most comprehensive property search experience with advanced features and real-time updates
+              We provide the most comprehensive property search experience with trusted agents 
+              and verified listings across Malaysia
             </p>
           </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Search className="h-8 w-8 text-blue-600 dark:text-blue-400" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                Advanced Search
-              </h3>
-              <p className="text-gray-600 dark:text-gray-400">
-                Find properties with precise filters including location, price range, and amenities
-              </p>
-            </div>
-            
-            <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4">
-                <MapPin className="h-8 w-8 text-green-600 dark:text-green-400" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                Location Intelligence
-              </h3>
-              <p className="text-gray-600 dark:text-gray-400">
-                Smart location suggestions with autocomplete for projects, neighborhoods, and cities
-              </p>
-            </div>
-            
-            <div className="text-center">
-              <div className="w-16 h-16 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Grid className="h-8 w-8 text-purple-600 dark:text-purple-400" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                Multiple Views
-              </h3>
-              <p className="text-gray-600 dark:text-gray-400">
-                Switch between grid and list views for the best browsing experience
-              </p>
-            </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <Card className="text-center p-6 hover:shadow-lg transition-shadow duration-300">
+              <CardContent className="p-0">
+                <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Search className="h-8 w-8 text-blue-600" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                  Advanced Search
+                </h3>
+                <p className="text-gray-600 dark:text-gray-300">
+                  Find properties with precise filters and location intelligence
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center p-6 hover:shadow-lg transition-shadow duration-300">
+              <CardContent className="p-0">
+                <div className="w-16 h-16 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Shield className="h-8 w-8 text-green-600" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                  Verified Listings
+                </h3>
+                <p className="text-gray-600 dark:text-gray-300">
+                  All properties are verified and listed by trusted agents
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center p-6 hover:shadow-lg transition-shadow duration-300">
+              <CardContent className="p-0">
+                <div className="w-16 h-16 bg-purple-100 dark:bg-purple-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Users className="h-8 w-8 text-purple-600" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                  Expert Agents
+                </h3>
+                <p className="text-gray-600 dark:text-gray-300">
+                  Connect with experienced property professionals
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center p-6 hover:shadow-lg transition-shadow duration-300">
+              <CardContent className="p-0">
+                <div className="w-16 h-16 bg-orange-100 dark:bg-orange-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <TrendingUp className="h-8 w-8 text-orange-600" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                  Market Insights
+                </h3>
+                <p className="text-gray-600 dark:text-gray-300">
+                  Get real-time market data and property trends
+                </p>
+              </CardContent>
+            </Card>
           </div>
         </div>
-      </div>
+      </section>
+
+      {/* Featured Properties Section */}
+      <section className="py-20 bg-gray-50 dark:bg-gray-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row items-center justify-between mb-12">
+            <div>
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                Featured Properties
+              </h2>
+              <p className="text-xl text-gray-600 dark:text-gray-300">
+                Discover our handpicked selection of premium properties
+              </p>
+            </div>
+            
+            <div className="flex items-center space-x-4 mt-6 md:mt-0">
+              <Button
+                variant={viewMode === 'grid' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setViewMode('grid')}
+              >
+                Grid
+              </Button>
+              <Button
+                variant={viewMode === 'list' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setViewMode('list')}
+              >
+                List
+              </Button>
+            </div>
+          </div>
+
+          {loading ? (
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+              <p className="mt-4 text-gray-600 dark:text-gray-300">Loading properties...</p>
+            </div>
+          ) : (
+            <div className={`grid gap-6 ${
+              viewMode === 'grid' 
+                ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' 
+                : 'grid-cols-1'
+            }`}>
+              {featuredProperties.map((property) => (
+                <PropertyCard key={property.id} property={property} />
+              ))}
+            </div>
+          )}
+
+          <div className="text-center mt-12">
+            <Button size="lg" className="px-8 py-3">
+              View All Properties
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 bg-blue-600 text-white">
+        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            Ready to Find Your Dream Property?
+          </h2>
+          <p className="text-xl text-blue-100 mb-8">
+            Join thousands of satisfied customers who found their perfect home through Rumora Properties
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button size="lg" variant="secondary" className="bg-white text-blue-600 hover:bg-gray-100">
+              Start Searching
+              <Search className="ml-2 h-5 w-5" />
+            </Button>
+            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600">
+              Contact an Agent
+              <Users className="ml-2 h-5 w-5" />
+            </Button>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
