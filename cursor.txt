@@ -1,0 +1,14 @@
+Create a production-ready Next.js 14 website project (project name: rumora) using the App Router with the following tech stacks
+
+🔹 Tech Stack
+* TypeScript for type safety.
+* Tailwind CSS for styling with a clean, minimal UI.
+* File structure that follows the recommended Next.js conventions (app/, components/, lib/, hooks/, types/).
+* Reusable components using shadcn/ui (buttons, cards, modals, navigation, etc.).
+* Layout system with a global header, footer, and responsive design.
+* SEO best practices (dynamic metadata, Open Graph, canonical URLs, sitemap.xml, robots.txt).
+* API routes in app/api for server-side logic.
+* Environment variables using .env.local and process.env.
+* State management with React hooks (and Context API if needed).
+* Performance optimizations: image optimization (next/image), font optimization (next/font), dynamic imports for heavy components.
+* Testing setup with Jest + React Testing Library (unit & integration tests). 
