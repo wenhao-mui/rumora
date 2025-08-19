@@ -418,7 +418,12 @@ export default function AgentProfile() {
                             <span>{property.size.sqft.toLocaleString()} sqft</span>
                           </div>
                           <div className="flex space-x-2">
-                            <Button variant="outline" size="sm" className="flex-1">
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="flex-1"
+                              onClick={() => window.open(`/properties/${property.id}`, '_blank')}
+                            >
                               <Eye className="h-4 w-4 mr-2" />
                               View
                             </Button>

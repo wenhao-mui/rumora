@@ -102,12 +102,15 @@ const mockProperties: Property[] = [
   }
 ];
 
+
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string; }> }
 ) {
   try {
-    const { id } = params;
+    const { params } = context;
+    const resolvedParams = await params; // Await the promise
+    const { id } = resolvedParams;
 
     // Find the property by ID
     const property = mockProperties.find(p => p.id === id);
